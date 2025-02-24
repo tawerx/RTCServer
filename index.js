@@ -1,9 +1,16 @@
 import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
+import https from "https";
+import fs from "fs";
+
+const options = {
+  key: fs.readFileSync("./cert/localhost.key"),
+  cert: fs.readFileSync("./cert/localhost.crt"),
+};
 
 const app = express();
-const server = createServer(app);
+const server = https.createServer(options, app);
 const io = new Server(server);
 
 app.get("/", (req, res) => {
@@ -12,8 +19,7 @@ app.get("/", (req, res) => {
 
 const room = "fdf";
 io.on("connection", (socket) => {
-  console.log("user connected");
-  console.log(socket.id);
+  console.log("user connected" + socket.id);
   socket.join(room);
   socket.on("offer", (offer) => {
     socket.to(room).emit("getOffer", offer);
@@ -26,4 +32,4 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(9999, () => console.log("server start 8888"));
+server.listen(443, () => console.log("server start 8888"));
