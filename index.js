@@ -1,16 +1,9 @@
 import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
-import https from "https";
-import fs from "fs";
-
-const options = {
-  key: fs.readFileSync("./cert/localhost.key"),
-  cert: fs.readFileSync("./cert/localhost.crt"),
-};
 
 const app = express();
-const server = https.createServer(options, app);
+const server = createServer(app);
 const io = new Server(server);
 
 app.get("/", (req, res) => {
@@ -32,4 +25,4 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(443, () => console.log("server start 8888"));
+server.listen(9999, () => console.log("server start 9999"));
